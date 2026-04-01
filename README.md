@@ -16,19 +16,20 @@
 | （例：天氣） | 呼叫 weather_tool，查詢即時天氣        |          |
 | （例：景點） | 呼叫 search_tool，搜尋熱門景點         |          |
 | （例：建議） | 呼叫 advice_tool，取得隨機建議         |          |
+| （例：美食） | 呼叫 food_search_tool，搜尋當地必吃美食 | jessiliu0912 |
 | （例：出發） | 執行 trip_briefing Skill，產出行前簡報 |          |
 
 ---
 
 ## 組員與分工
 
-| 姓名 | 負責功能     | 檔案      | 使用的 API |
-| ---- | ------------ | --------- | ---------- |
-|      |              | `tools/`  |            |
-|      |              | `tools/`  |            |
-|      |              | `tools/`  |            |
-|      | Skill 整合   | `skills/` | —          |
-|      | Agent 主程式 | `main.py` | —          |
+| 姓名         | 負責功能     | 檔案                         | 使用的 API |
+| ------------ | ------------ | ---------------------------- | ---------- |
+| jessiliu0912 | 當地美食搜尋 | `tools/food_search_tool.py`  | DuckDuckGo |
+|              |              | `tools/`                     |            |
+|              |              | `tools/`                     |            |
+|              | Skill 整合   | `skills/`                    | —          |
+|              | Agent 主程式 | `main.py`                    | —          |
 
 ---
 
@@ -82,18 +83,40 @@ python main.py
 
 ## 各功能說明
 
-### [功能名稱]（負責：姓名）
+### 當地美食搜尋（負責：jessiliu0912）
 
-- **Tool 名稱**：
-- **使用 API**：
-- **輸入**：
+- **Tool 名稱**：`search_local_food`
+- **使用 API**：DuckDuckGo Search (python `ddgs`)
+- **輸入**：`destination` (str), `food_type` (str, optional), `max_results` (int, default=5)
 - **輸出範例**：
+  ```json
+  {
+    "destination": "台南",
+    "food_type": "所有美食",
+    "results": [
+      {
+        "title": "台南必吃美食名單...",
+        "snippet": "牛肉湯、碗粿、虱目魚粥...",
+        "url": "https://example.com/tainan-food"
+      }
+    ],
+    "message": "成功找到 5 筆關於 台南 的美食資訊。"
+  }
+  ```
 
 ```python
 TOOL = {
-    "name": "",
-    "description": "",
-    "parameters": { ... }
+    "name": "search_local_food",
+    "description": "搜尋指定目的地的當地美食與特色小吃。",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "destination": {"type": "string", "description": "目的地名稱"},
+            "food_type": {"type": "string", "description": "美食類型"},
+            "max_results": {"type": "integer"}
+        },
+        "required": ["destination"]
+    }
 }
 ```
 
